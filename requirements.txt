@@ -1,0 +1,9 @@
+# App
+fastapi==0.121.2
+uvicorn[standard]==0.38.0
+gunicorn==26.0.0
+
+# Database
+sqlalchemy[asyncio]==2.0.46
+asyncpg==0.31.0
+alembic==1.17.2
