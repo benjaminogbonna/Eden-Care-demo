@@ -1,0 +1,25 @@
+__pycache__/
+*.pyc
+.env
+.env.production
+.env.staging
+.env.development
+venv/
+.venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+logs/*.log
+storage/videos/*
+storage/pdfs/*
+storage/images/*
+storage/certificates/*
+!storage/videos/.gitkeep
+!storage/pdfs/.gitkeep
+!storage/images/.gitkeep
+!storage/certificates/.gitkeep
+.DS_Store
+*.sqlite3
+
+# docs/
