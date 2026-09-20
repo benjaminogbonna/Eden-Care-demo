@@ -17,7 +17,7 @@ HISTORY_ROLES = frozenset({"PATIENT", "COMPANION"})
 @dataclass(frozen=True)
 class Turn:
     index: int
-    ref: str  # "[00:29]"
+    ref: str 
     seconds: int
     role: str
     text: str
