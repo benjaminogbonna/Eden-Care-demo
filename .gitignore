@@ -22,4 +22,6 @@ storage/certificates/*
 .DS_Store
 *.sqlite3
 
-# docs/
+docs/
+outputs/
+data/
