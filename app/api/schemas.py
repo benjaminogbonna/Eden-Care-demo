@@ -42,3 +42,43 @@ class ExtractData(BaseModel):
     warnings: list[str] = Field(default_factory=list)
 
 
+class ValidateRequest(BaseModel):
+    transcript: str
+    note: dict[str, Any]
+
+
+class ValidateData(BaseModel):
+    valid: bool
+
+
+class ResolveRequest(BaseModel):
+    note: dict[str, Any]
+    register_csv: str | None = Field(default=None, description="Register CSV text; defaults to the bundled register")
+
+
+class ResolveData(BaseModel):
+    resolved: dict[str, Any]
+
+
+class KnowledgeRequest(BaseModel):
+    source: str | None = Field(default=None, description="Guideline text with a 'SOURCE: ..., Section n.n, page n.' header; defaults to the bundled excerpt")
+
+
+class SpeechEvalRequest(BaseModel):
+    reference: str
+    hypothesis: str
+
+
+class PipelineRequest(BaseModel):
+    transcript: str
+    register_csv: str | None = None
+    source: str | None = None
+    engine: Literal["auto", "gemini", "rules"] | None = None
+
+
+class PipelineData(BaseModel):
+    ok: bool
+    note: dict[str, Any] | None = None
+    resolved: dict[str, Any] | None = None
+    knowledge: dict[str, Any] | None = None
+    run_log: list[dict[str, Any]]
