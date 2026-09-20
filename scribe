@@ -1,0 +1,20 @@
+"""Entry point for the  CLI (Appendix A).
+
+If a local virtualenv exists at ./.venv this launcher re-executes itself inside it.
+"""
+import os
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+VENV_PY = ROOT / ".venv" / "bin" / "python"
+if VENV_PY.exists() and Path(sys.prefix).resolve() != (ROOT / ".venv").resolve() \
+        and os.environ.get("SCRIBE_NO_REEXEC") != "1":
+    os.environ["SCRIBE_NO_REEXEC"] = "1"
+    os.execv(str(VENV_PY), [str(VENV_PY), str(Path(__file__).resolve()), *sys.argv[1:]])
+
+sys.path.insert(0, str(ROOT))
+from app.cli import main
+
+if __name__ == "__main__":
+    raise SystemExit(main())
