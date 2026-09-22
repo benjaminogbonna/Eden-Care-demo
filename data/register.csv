@@ -1,0 +1,13 @@
+kind,code,name,synonyms
+diagnosis,K29.7,Gastritis unspecified,"gastritis;tumbo kuwaka;stomach inflammation"
+diagnosis,K25.9,Gastric ulcer unspecified,"gastric ulcer;stomach ulcer;kidonda cha tumbo"
+diagnosis,K21.0,Gastro-oesophageal reflux disease with oesophagitis,"GERD;reflux;heartburn"
+diagnosis,K35.8,Acute appendicitis other and unspecified,"appendicitis;appendix"
+drug,M01AB05,Diclofenac,"diclofenac;voltaren"
+drug,N02BE01,Paracetamol,"paracetamol;panadol;acetaminophen"
+drug,A02BC01,Omeprazole,"omeprazole;omez"
+drug,J01CA04,Amoxicillin,"amoxicillin;amoxil"
+lab,LAB-EC-0412,Helicobacter pylori stool antigen,"h pylori stool antigen;h. pylori antigen;HpSA"
+lab,LAB-EC-0107,Full blood count,"FBC;CBC;full haemogram"
+procedure,PGP-EC-0330,Appendicectomy,"appendectomy;appendix removal"
+allergen,ALG-EC-0003,Penicillins,"penicillin;penicillins;amoxicillin allergy"
