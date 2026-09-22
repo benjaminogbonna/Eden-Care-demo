@@ -1,0 +1,19 @@
+[00:00] DOCTOR: Habari, karibu. What brings you in today?
+[00:04] PATIENT: Nimekuwa na tumbo kuuma for about three weeks, hapa juu, kama kuwaka.
+[00:11] DOCTOR: Burning pain in the upper abdomen. Is it worse after eating or at night?
+[00:15] PATIENT: Usiku sana. And after tea in the morning.
+[00:19] DOCTOR: Any vomiting, black stool, weight loss?
+[00:22] PATIENT: No vomiting. Stool is normal. Weight ni sawa.
+[00:27] DOCTOR: Are you taking any medicines?
+[00:29] PATIENT: Diclofenac for my knee, one tablet mara mbili kwa siku, for about a month now. Na Panadol sometimes.
+[00:38] DOCTOR: Any known allergies?
+[00:40] PATIENT: Penicillin. Nilipata rash last year.
+[00:44] DOCTOR: Any surgeries before?
+[00:46] PATIENT: Appendix, 2019, at the county hospital.
+[00:50] DOCTOR: Anyone in the family with stomach problems or ulcers?
+[00:53] PATIENT: My father alikuwa na ulcers.
+[00:57] DOCTOR: Do you smoke or drink?
+[00:59] PATIENT: I do not smoke. Pombe kidogo, weekends.
+[01:03] DOCTOR: BP is 128 over 82, pulse 76, temperature 36.8. Abdomen is soft, mild epigastric tenderness, no guarding.
+[01:14] DOCTOR: I think this is most likely gastritis related to the diclofenac. We will stop the diclofenac, start omeprazole 20 milligrams once daily for four weeks, and check an H. pylori stool antigen. Come back in two weeks, sooner if you vomit blood or the pain becomes severe.
+[01:35] PATIENT: Sawa, asante daktari.
