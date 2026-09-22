@@ -121,3 +121,19 @@ The system prompt (`prompts/extract_system.md`) states the rules above, forbids 
 The prompt hash and model are written to `run_log.jsonl`.
 
 ---
+
+## 5. Speech evaluation
+
+`uv run python ./scribe speech-eval` reports overall and per-language WER, CER, a **clinical-token error rate (CTER)**, turn-level role accuracy, and an error table (`ref`, `hyp`, `type`, `lang`, `clinical`, plus raw forms, timestamp and an error class).
+
+### Result on `transcript_01.txt` vs `hyp_01.txt` (normaliser `scribe-norm/1.0`)
+
+### Language tagging
+
+Each reference token is tagged `en`, `sw` or `other` by (1) digits, single letters and drug/lab names -> `other`; (2) a bundled Swahili wordlist -> `sw`; (3) Swahili verb morphology (subject prefix + tense marker + stem, >= 6 letters, with an English guard list) -> `sw`; (4) everything else -> `en`.
+
+### Clinical tokens
+
+A reference token is clinical if it is a **negation**, **drug/lab name**, **allergy/reaction word**, **number** (dose, vital, year, duration), **dose unit or frequency** (`mg`, `once`, `daily`, `mara <numeral>`), **vital-sign name**, or **date/duration word**. 
+
+---
