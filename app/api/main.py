@@ -1,4 +1,4 @@
-"""FastAPI application factory."""
+"""FastAPI application."""
 
 from __future__ import annotations
 
@@ -36,12 +36,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         yield
 
     app = FastAPI(
-        title="Scribe API",
+        title="Eden Care API",
         version=VERSION,
-        summary="Grounded clinical extraction, deterministic coding and speech evaluation",
+        summary="Clinical extraction, coding and speech evaluation",
         description=(
-            "Every response has the shape `{success, message, data, errors}`. Notes are validated against the transcript: "
-            "no value without a verbatim span, no codes from a model, no changed numbers."
+            "Every response has the shape {success, message, data, errors}. Notes are validated against the transcript"
         ),
         lifespan=lifespan,
     )
@@ -73,7 +72,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.exception_handler(Exception)
     async def unexpected(_: Request, exc: Exception):
-        log.exception("unhandled error: %s", type(exc).__name__)  # message only; never the request body
+        log.exception("unhandled error: %s", type(exc).__name__)
         return _envelope(500, "internal server error", [ErrorItem(code="internal_error", message="an unexpected error occurred")])
 
     app.include_router(health_router)
