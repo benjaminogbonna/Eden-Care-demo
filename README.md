@@ -34,20 +34,7 @@ This creates an `outputs/` folder that holds the results: `note.json`, `resolved
 
 ---
 
-## 2. Verification status (read this first)
-
-| Area | Status |
-|---|---|
-| Rules engine, validator, resolver, knowledge, speech-eval, pipeline, CLI, API | Implemented and covered by tests; the CLI is exercised end to end via subprocess. |
-| Gemini engine (`google-genai`) | Code complete. Tested with an **injected fake client** using the real SDK config types (`GenerateContentConfig`, `HttpOptions`), covering grounding, retries, malformed output, fallback and failure. **It has not been run against the live Gemini API**: no key or network was available where this was built. Treat the first real run as the first integration test. |
-| Committed outputs | Produced by the **rules engine** (`--offline`), not by Gemini. |
-| Default model | `gemini-3.5-flash`, configurable via `GEMINI_MODEL`. When I checked, `gemini-2.5-flash` was listed for shutdown in October 2026, so I did not default to it. Verify the current model list before relying on this. |
-
-**Privacy note.** With a key set, `extract` sends transcript *text* to Google's API. That is fine for synthetic data. For real patient consultations, use `--engine rules`, or replace the client with an on-premises model, before any clinical use; see Part E for the data-residency constraint.
-
----
-
-## 3. CLI
+## 2. CLI
 
 | Command | What it does | Exit codes (sample) |
 |---|---|---|
@@ -71,3 +58,66 @@ This creates an `outputs/` folder that holds the results: `note.json`, `resolved
 3. **No model in the resolver.** `app/services/resolver/` is pure standard-library code: exact/phrase/token-bag/edit-distance matching against the register.
 4. **No validator that lets a changed number through.** Every number in `value` (or `entity`) must appear in the span, as digits *or* spoken words, in either direction (`3 weeks` - `three weeks`, `2019` - `twenty nineteen`, `128/82` - `128 over 82`). Swahili numerals 1–10 are understood too. A changed number is rejected even if written as a word.
 5. **No reported metric the committed tool cannot reproduce.** `metrics_01.json` is regenerated and compared for equality.
+
+### Known limits of the rules engine
+
+The rules engine is topic-driven: it depends on the doctor asking recognisable questions (allergies, medicines, surgeries, family, etc) and on bilingual lexicons.
+
+---
+
+## 3. REST API (using uv)
+
+Run with `uv run python ./scribe serve` (or `uv run uvicorn app.api.main:app`). Interactive docs are generated automatically at **`/docs`** (Swagger) and **`/redoc`**; and the schema is at `/openapi.json`.
+
+Every response, success or error, has the same format:
+
+```json
+{ "success": true, "message": "note extracted (engine=rules)", "data": { ... }, "errors": [] }
+{ "success": false, "message": "note rejected with 1 violation(s)", "data": null,
+  "errors": [ { "code": "number_not_in_span", "message": "...", "field": "$.vitals[1]" } ] }
+```
+
+| Endpoint | Purpose | Failure status |
+|---|---|---|
+| `GET /health` | liveness; reports whether API is running and Gemini is configured | |
+| `POST /api/v1/extract` | `{transcript, engine?}` -> note (+ engine, model, prompt hash, fallback reason, warnings) | 400 bad transcript, 502 Gemini failure |
+| `POST /api/v1/validate` | `{transcript, note}` -> `{valid: true}` or violations in `errors` | 422 rejected |
+| `POST /api/v1/resolve` | `{note, register_csv?}` -> resolved note | 400 bad register/note |
+| `POST /api/v1/knowledge` | `{source?}` -> cited rows | 400 |
+| `POST /api/v1/speech-eval` | `{reference, hypothesis}` -> metrics | 400 |
+| `POST /api/v1/pipeline` | all stages; returns outputs + run log | 422 with `data.run_log` and the failing stage |
+
+```bash
+curl -s localhost:8000/api/v1/extract -H 'Content-Type: application/json' \
+  -d "$(python3 -c 'import json;print(json.dumps({"transcript":open("data/transcript_01.txt").read(),"engine":"rules"}))')"
+```
+
+Security: optional API-key auth (`X-API-Key`, constant-time compare) when `API_KEY` is set (`/health` stays open); request-size cap (checked against `Content-Length`; put a reverse proxy in front for chunked uploads); CORS off unless configured; transcript text is never logged (only hashes and counts); 500s return a generic message.
+
+### Environment configuration (`.env`)
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `GEMINI_API_KEY` (alias `GOOGLE_API_KEY`) | unset | Enables the Gemini engine |
+| `GEMINI_MODEL` | `gemini-3.5-flash` | Model name |
+| `GEMINI_TIMEOUT_SECONDS` / `GEMINI_MAX_RETRIES` | `90` / `3` | Retries (exponential back-off) apply to 408/429/5xx only |
+| `ENGINE` | `auto` | `auto`, `gemini` or `rules` |
+| `API_KEY` | unset | Require `X-API-Key` on `/api/v1/*` |
+| `CORS_ORIGINS` | empty | Comma-separated origins |
+| `MAX_BODY_BYTES` | `2000000` | Request and transcript size cap |
+| `HOST` / `PORT` / `LOG_LEVEL` | `127.0.0.1` / `8000` / `INFO` | Server and logging |
+
+---
+
+## 4. The Gemini engine
+
+The system prompt (`prompts/extract_system.md`) states the rules above, forbids codes, and defines `entity` (a plain-English name for the resolver to match later). Structured output uses `response_schema` with `temperature=0` and `seed=0`. The model's JSON is then treated as **untrusted input**:
+
+* `attribution` is overwritten from the real speaker of the cited line;
+* any element with a non-verbatim span, a changed number, a code, a family-history leak, an invalid certainty or a wrong speaker for its section is **dropped and reported** (the same `check_element` the validator uses);
+* thinking-aloud is forced to `considered_and_rejected`;
+* the assembled note must then pass the full validator, otherwise the engine fails (and `auto` falls back).
+
+The prompt hash and model are written to `run_log.jsonl`.
+
+---
