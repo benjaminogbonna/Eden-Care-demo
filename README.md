@@ -39,12 +39,12 @@ This creates an `outputs/` folder that holds the results: `note.json`, `resolved
 | Command | What it does | Exit codes (sample) |
 |---|---|---|
 | `uv run python ./scribe check` | Python version, dependencies, bundled files, a rules-engine self-test; reports whether Gemini is configured | 0 ready, 1 missing something |
-| `uv run python ./scribe extract --transcript T --out note.json [--engine auto\|gemini\|rules] [--offline]` | transcript -> grounded note | 0 ok, 2 bad input, 3 extraction failure |
-| `uv run python ./scribe validate --transcript T --note note.json` | prove the note is grounded; prints each violation | 0 valid, 1 rejected, 2 unreadable/malformed input |
+| `uv run python ./scribe extract --transcript ./data/transcript_01.txt --out note.json [--engine auto\|gemini\|rules] [--offline]` | transcript -> grounded note | 0 ok, 2 bad input, 3 extraction failure |
+| `uv run python ./scribe validate --transcript ./data/transcript_01.txt  --note ./outputs/note.json` | prove the note is grounded; prints each violation | 0 valid, 1 rejected, 2 unreadable/malformed input |
 | `uv run python ./scribe resolve --note note.json --register register.csv --out resolved.json` | deterministic coding, no model | 0 ok, 2 bad register/note |
 | `uv run python ./scribe knowledge --source guideline.txt --out knowledge.json` | cited rows from a guideline | 0 ok, 2 bad source |
 | `uv run python ./scribe speech-eval --ref R --hyp H --out metrics.json` | speech metrics | 0 ok, 2 bad input |
-| `uv run python ./scribe pipeline --transcript T --register R --source S --out DIR [--offline]` | all stages + `run_log.jsonl` | 0 ok; non-zero naming the failing stage and input |
+| `uv run python ./scribe pipeline --transcript ./data/transcript_01.txt --register R --source S --out DIR [--offline]` | all stages + `run_log.jsonl` | 0 ok; non-zero naming the failing stage and input |
 | `uv run python./scribe serve` or `uv run uvicorn app.api.main:app` | run the REST API | |
 
 **Engines (check example env file).** `auto` (default) uses Gemini when a key is present and otherwise the rules engine. `--engine gemini` fails non-zero if Gemini is unavailable or its output cannot be grounded. `--offline` (= `--engine rules`) is deterministic and needs no network. There is no special-casing of `transcript_01.txt`.
