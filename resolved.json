@@ -1,0 +1,403 @@
+{
+  "chief_complaint": [
+    {
+      "value": "Abdominal pain for about 3 weeks, upper abdomen, burning",
+      "span": {
+        "ref": "[00:04]",
+        "text": "Nimekuwa na tumbo kuuma for about three weeks, hapa juu, kama kuwaka"
+      },
+      "confidence": 0.0,
+      "attribution": "patient",
+      "extraction_confidence": 0.9,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "symptoms are not in the register"
+    }
+  ],
+  "history_of_presenting_illness": [
+    {
+      "value": "Abdominal pain for about 3 weeks, upper abdomen, burning",
+      "span": {
+        "ref": "[00:04]",
+        "text": "Nimekuwa na tumbo kuuma for about three weeks, hapa juu, kama kuwaka"
+      },
+      "confidence": 0.0,
+      "attribution": "patient",
+      "extraction_confidence": 0.9,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "narrative section; not coded"
+    },
+    {
+      "value": "Worse especially at night",
+      "span": {
+        "ref": "[00:15]",
+        "text": "Usiku sana"
+      },
+      "confidence": 0.0,
+      "attribution": "patient",
+      "extraction_confidence": 0.9,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "narrative section; not coded"
+    },
+    {
+      "value": "Worse after tea in the morning",
+      "span": {
+        "ref": "[00:15]",
+        "text": "And after tea in the morning"
+      },
+      "confidence": 0.0,
+      "attribution": "patient",
+      "extraction_confidence": 0.9,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "narrative section; not coded"
+    }
+  ],
+  "review_of_systems": [
+    {
+      "value": "No vomiting",
+      "span": {
+        "ref": "[00:22]",
+        "text": "No vomiting"
+      },
+      "confidence": 0.0,
+      "attribution": "patient",
+      "extraction_confidence": 1.0,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "negatives are not coded"
+    },
+    {
+      "value": "No black stool (patient: stool is normal)",
+      "span": {
+        "ref": "[00:22]",
+        "text": "Stool is normal"
+      },
+      "confidence": 0.0,
+      "attribution": "patient",
+      "extraction_confidence": 0.85,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "negatives are not coded"
+    },
+    {
+      "value": "No weight loss (patient: weight is fine)",
+      "span": {
+        "ref": "[00:22]",
+        "text": "Weight ni sawa"
+      },
+      "confidence": 0.0,
+      "attribution": "patient",
+      "extraction_confidence": 0.85,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "negatives are not coded"
+    }
+  ],
+  "past_medical_history": "NOT_STATED",
+  "past_surgical_history": [
+    {
+      "value": "Appendicectomy (appendix), 2019, at the county hospital",
+      "span": {
+        "ref": "[00:46]",
+        "text": "Appendix, 2019, at the county hospital"
+      },
+      "confidence": 1.0,
+      "attribution": "patient",
+      "entity": "appendicectomy",
+      "extraction_confidence": 0.9,
+      "code": "PGP-EC-0330",
+      "code_system": "EDEN-CARE-PGP",
+      "alternatives": [],
+      "status": "resolved"
+    }
+  ],
+  "medication_history": [
+    {
+      "value": "Diclofenac for my knee, 1 tablet twice daily, for about a month now",
+      "span": {
+        "ref": "[00:29]",
+        "text": "Diclofenac for my knee, one tablet mara mbili kwa siku, for about a month now"
+      },
+      "confidence": 1.0,
+      "attribution": "patient",
+      "entity": "diclofenac",
+      "extraction_confidence": 0.95,
+      "code": "M01AB05",
+      "code_system": "ATC",
+      "alternatives": [],
+      "status": "resolved"
+    },
+    {
+      "value": "Panadol sometimes",
+      "span": {
+        "ref": "[00:29]",
+        "text": "Na Panadol sometimes"
+      },
+      "confidence": 1.0,
+      "attribution": "patient",
+      "entity": "panadol",
+      "extraction_confidence": 0.95,
+      "code": "N02BE01",
+      "code_system": "ATC",
+      "alternatives": [],
+      "status": "resolved"
+    }
+  ],
+  "allergies": [
+    {
+      "value": "Penicillin — rash (last year)",
+      "span": {
+        "ref": "[00:40]",
+        "text": "Penicillin. Nilipata rash last year"
+      },
+      "confidence": 1.0,
+      "attribution": "patient",
+      "entity": "penicillin",
+      "extraction_confidence": 0.95,
+      "code": "ALG-EC-0003",
+      "code_system": "EDEN-CARE-ALG",
+      "alternatives": [],
+      "status": "resolved"
+    }
+  ],
+  "family_history": [
+    {
+      "value": "Father had ulcers",
+      "span": {
+        "ref": "[00:53]",
+        "text": "My father alikuwa na ulcers"
+      },
+      "confidence": 0.0,
+      "attribution": "patient",
+      "extraction_confidence": 0.9,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "family history is not a patient diagnosis and is never coded"
+    }
+  ],
+  "social_history": [
+    {
+      "value": "Does not smoke",
+      "span": {
+        "ref": "[00:59]",
+        "text": "I do not smoke"
+      },
+      "confidence": 0.0,
+      "attribution": "patient",
+      "extraction_confidence": 0.9,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "not coded"
+    },
+    {
+      "value": "Alcohol a little, weekends",
+      "span": {
+        "ref": "[00:59]",
+        "text": "Pombe kidogo, weekends"
+      },
+      "confidence": 0.0,
+      "attribution": "patient",
+      "extraction_confidence": 0.9,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "not coded"
+    }
+  ],
+  "vitals": [
+    {
+      "value": "BP 128/82",
+      "span": {
+        "ref": "[01:03]",
+        "text": "BP is 128 over 82"
+      },
+      "confidence": 0.0,
+      "attribution": "doctor",
+      "extraction_confidence": 1.0,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "measurements are not coded"
+    },
+    {
+      "value": "Pulse 76",
+      "span": {
+        "ref": "[01:03]",
+        "text": "pulse 76"
+      },
+      "confidence": 0.0,
+      "attribution": "doctor",
+      "extraction_confidence": 1.0,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "measurements are not coded"
+    },
+    {
+      "value": "Temperature 36.8",
+      "span": {
+        "ref": "[01:03]",
+        "text": "temperature 36.8"
+      },
+      "confidence": 0.0,
+      "attribution": "doctor",
+      "extraction_confidence": 1.0,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "measurements are not coded"
+    }
+  ],
+  "examination": [
+    {
+      "value": "Abdomen is soft",
+      "span": {
+        "ref": "[01:03]",
+        "text": "Abdomen is soft"
+      },
+      "confidence": 0.0,
+      "attribution": "doctor",
+      "extraction_confidence": 1.0,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "findings are not coded"
+    },
+    {
+      "value": "Mild epigastric tenderness",
+      "span": {
+        "ref": "[01:03]",
+        "text": "mild epigastric tenderness"
+      },
+      "confidence": 0.0,
+      "attribution": "doctor",
+      "extraction_confidence": 1.0,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "findings are not coded"
+    },
+    {
+      "value": "No guarding",
+      "span": {
+        "ref": "[01:03]",
+        "text": "no guarding"
+      },
+      "confidence": 0.0,
+      "attribution": "doctor",
+      "extraction_confidence": 1.0,
+      "code": null,
+      "code_system": "none",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "findings are not coded"
+    }
+  ],
+  "assessment": [
+    {
+      "value": "Gastritis related to the diclofenac",
+      "span": {
+        "ref": "[01:14]",
+        "text": "I think this is most likely gastritis related to the diclofenac"
+      },
+      "confidence": 1.0,
+      "attribution": "doctor",
+      "certainty": "probable",
+      "entity": "Gastritis",
+      "extraction_confidence": 0.95,
+      "code": "K29.7",
+      "code_system": "ICD-10",
+      "alternatives": [],
+      "status": "resolved"
+    }
+  ],
+  "plan": [
+    {
+      "value": "Stop the diclofenac",
+      "span": {
+        "ref": "[01:14]",
+        "text": "We will stop the diclofenac"
+      },
+      "confidence": 1.0,
+      "attribution": "doctor",
+      "entity": "diclofenac",
+      "extraction_confidence": 1.0,
+      "code": "M01AB05",
+      "code_system": "ATC",
+      "alternatives": [],
+      "status": "resolved"
+    },
+    {
+      "value": "Start omeprazole 20 mg once daily for 4 weeks",
+      "span": {
+        "ref": "[01:14]",
+        "text": "start omeprazole 20 milligrams once daily for four weeks"
+      },
+      "confidence": 1.0,
+      "attribution": "doctor",
+      "entity": "omeprazole",
+      "extraction_confidence": 1.0,
+      "code": "A02BC01",
+      "code_system": "ATC",
+      "alternatives": [],
+      "status": "resolved"
+    },
+    {
+      "value": "Check an H. pylori stool antigen",
+      "span": {
+        "ref": "[01:14]",
+        "text": "check an H. pylori stool antigen"
+      },
+      "confidence": 1.0,
+      "attribution": "doctor",
+      "entity": "h. pylori stool antigen",
+      "extraction_confidence": 1.0,
+      "code": "LAB-EC-0412",
+      "code_system": "EDEN-CARE-LAB",
+      "alternatives": [],
+      "status": "resolved"
+    },
+    {
+      "value": "Come back in 2 weeks, sooner if you vomit blood or the pain becomes severe",
+      "span": {
+        "ref": "[01:14]",
+        "text": "Come back in two weeks, sooner if you vomit blood or the pain becomes severe"
+      },
+      "confidence": 0.0,
+      "attribution": "doctor",
+      "extraction_confidence": 1.0,
+      "code": null,
+      "code_system": "ATC",
+      "alternatives": [],
+      "status": "unresolved",
+      "reason": "no register entry is close enough; left uncoded"
+    }
+  ]
+}
