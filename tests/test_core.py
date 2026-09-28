@@ -1,3 +1,4 @@
+# Tests for the core functions of the app, including parsing transcripts, handling numbers, and detecting patterns in text.
 import pytest
 
 from app.core.numbers import digitize, numeric_values, parse_number
