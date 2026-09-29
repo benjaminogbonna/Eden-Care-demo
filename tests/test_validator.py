@@ -52,3 +52,16 @@ def test_code_like_string_rejected_anywhere(note1, transcript1, tampered, bad_va
     bad = tampered(note1, lambda n: n["plan"][0].update(value=bad_value))
     assert "code_like_string" in codes(bad, transcript1)
 
+
+def test_code_in_key_or_entity_rejected(note1, transcript1, tampered):
+    assert "code_like_string" in codes(tampered(note1, lambda n: n["plan"][0].update(entity="K29.7")), transcript1)
+    assert "code_like_string" in codes(tampered(note1, lambda n: n["plan"][0].update({"K29": 1})), transcript1)
+    assert "code_like_string" in codes(tampered(note1, lambda n: n["plan"][0]["span"].update(text="M01AB05")), transcript1)
+
+
+def test_family_history_moved_to_assessment_rejected(note1, transcript1, tampered):
+    def move(n):
+        fam = n["family_history"][0]
+        n["assessment"].append({**fam, "certainty": "confirmed"})
+    assert "family_history_in_assessment" in codes(tampered(note1, move), transcript1)
+
