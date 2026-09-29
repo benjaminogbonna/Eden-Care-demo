@@ -37,3 +37,18 @@ def test_spoken_and_digit_forms_both_directions(value, span):
     note["history_of_presenting_illness"] = [{"value": value, "span": {"ref": "[00:00]", "text": span}, "confidence": 1.0}]
     assert validate_note(note, t) == []
 
+
+def test_changed_spelled_number_rejected():
+    from app.core.transcript import parse_transcript
+    from app.domain.note import SECTIONS
+    t = parse_transcript("[00:00] PATIENT: pain for three weeks")
+    note = {s: "NOT_STATED" for s in SECTIONS}
+    note["history_of_presenting_illness"] = [{"value": "Pain for 4 weeks", "span": {"ref": "[00:00]", "text": "for three weeks"}, "confidence": 1.0}]
+    assert "number_not_in_span" in codes(note, t)
+
+
+@pytest.mark.parametrize("bad_value", ["Diclofenac M01AB05", "Gastritis K29.7", "LAB-EC-0412", "ALG-EC-0003 penicillin", "code J01CA04"])
+def test_code_like_string_rejected_anywhere(note1, transcript1, tampered, bad_value):
+    bad = tampered(note1, lambda n: n["plan"][0].update(value=bad_value))
+    assert "code_like_string" in codes(bad, transcript1)
+
