@@ -65,3 +65,62 @@ def test_family_history_moved_to_assessment_rejected(note1, transcript1, tampere
         n["assessment"].append({**fam, "certainty": "confirmed"})
     assert "family_history_in_assessment" in codes(tampered(note1, move), transcript1)
 
+
+def test_family_word_smuggled_into_assessment_value(note1, transcript1, tampered):
+    bad = tampered(note1, lambda n: n["assessment"][0].update(value="Family history of gastric ulcer (father)"))
+    assert {"family_history_in_assessment", "family_word_not_in_span"} <= codes(bad, transcript1)
+
+
+def test_family_fact_in_personal_section_rejected(note1, transcript1, tampered):
+    bad = tampered(note1, lambda n: n.update(past_medical_history=[dict(n["family_history"][0])]))
+    assert "family_fact_in_personal_section" in codes(bad, transcript1)
+
+
+def test_span_must_be_verbatim(note1, transcript1, tampered):
+    bad = tampered(note1, lambda n: n["vitals"][1]["span"].update(text="pulse seventy six"))
+    assert "span_not_verbatim" in codes(bad, transcript1)
+    bad = tampered(note1, lambda n: n["vitals"][1]["span"].update(ref="[09:99]"))
+    assert "span_ref_unknown" in codes(bad, transcript1)
+
+
+def test_structure_rules(note1, transcript1, tampered):
+    assert "structure" in codes(tampered(note1, lambda n: n.pop("plan")), transcript1)
+    assert "structure" in codes(tampered(note1, lambda n: n.update(extra=[])), transcript1)
+    assert "not_stated_literal" in codes(tampered(note1, lambda n: n.update(past_medical_history=[])), transcript1)
+    assert "not_stated_literal" in codes(tampered(note1, lambda n: n.update(past_medical_history="none")), transcript1)
+    assert "confidence_range" in codes(tampered(note1, lambda n: n["plan"][0].update(confidence=1.5)), transcript1)
+    assert "certainty_invalid" in codes(tampered(note1, lambda n: n["assessment"][0].update(certainty="certain")), transcript1)
+    assert "structure" in validate_note([], transcript1)[0].code
+
+
+def test_companion_as_fact_and_attribution(companion_text, tampered):
+    import asyncio
+    from app.core.transcript import parse_transcript
+    from app.services.extraction.service import extract_note
+    note = asyncio.run(extract_note(companion_text, engine="rules")).note
+    t = parse_transcript(companion_text)
+    def strip(n): del n["history_of_presenting_illness"][0]["attribution"]
+    assert "companion_as_fact" in codes(tampered(note, strip), t)
+    def relabel(n): n["history_of_presenting_illness"][0]["attribution"] = "patient"
+    assert {"companion_as_fact", "attribution_mismatch"} <= codes(tampered(note, relabel), t)
+
+
+def test_thinking_aloud_as_plain_fact_rejected(companion_text, tampered):
+    import asyncio
+    from app.core.transcript import parse_transcript
+    from app.services.extraction.service import extract_note
+    note = asyncio.run(extract_note(companion_text, engine="rules")).note
+    t = parse_transcript(companion_text)
+    def unmark(n): del n["assessment"][0]["kind"]
+    assert "thinking_aloud_as_fact" in codes(tampered(note, unmark), t)
+
+
+def test_ros_must_be_negative_and_asked(note1, transcript1, tampered):
+    assert "ros_not_negative" in codes(tampered(note1, lambda n: n["review_of_systems"][0].update(value="Vomiting")), transcript1)
+    bad = tampered(note1, lambda n: n["review_of_systems"].append({"value": "No fever", "span": {"ref": "[00:22]", "text": "No vomiting"}, "confidence": 1.0, "attribution": "patient"}))
+    assert "ros_not_asked" in codes(bad, transcript1)
+
+
+def test_patient_cannot_supply_assessment(note1, transcript1, tampered):
+    bad = tampered(note1, lambda n: n["assessment"].append({"value": "Gastritis", "span": {"ref": "[00:04]", "text": "tumbo kuuma"}, "confidence": 1.0, "certainty": "confirmed"}))
+    assert "not_from_clinician" in codes(bad, transcript1)
