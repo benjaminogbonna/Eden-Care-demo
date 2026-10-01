@@ -54,3 +54,22 @@ def metrics(t1_text_module=None):
     hyp = (ROOT / "data" / "hyp_01.txt").read_text()
     return asyncio.run(evaluate_texts(ref, hyp))
 
+
+def test_pair_catches_the_clinical_errors(metrics):
+    clinical = {(e["ref"], e["hyp"]) for e in metrics["errors"] if e["clinical"]}
+    assert {("76", "67"), ("rash", "rush"), ("diclofenac", "diclofenak")} <= clinical
+    assert metrics["clinical_token_error_rate"] > metrics["wer_overall"]
+    assert metrics["role_accuracy"] == 1.0 and metrics["normaliser_version"]
+
+
+def test_required_keys_and_ranges(metrics):
+    for k in ("normaliser_version", "wer_overall", "wer_en", "wer_sw", "cer_overall", "clinical_token_error_rate", "role_accuracy",
+              "errors", "language_tagging_method", "clinical_token_rule"):
+        assert k in metrics
+    assert all(0 <= metrics[k] <= 1 for k in ("wer_overall", "wer_en", "wer_sw", "cer_overall", "role_accuracy"))
+    for e in metrics["errors"]:
+        assert {"ref", "hyp", "type", "lang", "clinical"} <= set(e) and e["type"] in ("sub", "del", "ins") and e["lang"] in ("en", "sw", "other")
+
+
+def test_committed_metrics_reproduce_exactly(metrics):
+    assert json.loads((ROOT / "outputs" / "metrics_01.json").read_text()) == json.loads(json.dumps(metrics))
