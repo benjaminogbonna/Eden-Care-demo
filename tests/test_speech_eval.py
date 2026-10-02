@@ -73,3 +73,34 @@ def test_required_keys_and_ranges(metrics):
 
 def test_committed_metrics_reproduce_exactly(metrics):
     assert json.loads((ROOT / "outputs" / "metrics_01.json").read_text()) == json.loads(json.dumps(metrics))
+
+
+def test_normaliser_sensitivity_is_reported(metrics):
+    s = metrics["normaliser_sensitivity"]
+    assert s["basic"]["wer_overall"] > s["numbers"]["wer_overall"] > s["full"]["wer_overall"]
+
+
+def test_dropped_negation_and_inserted_word_on_unseen_pair():
+    ref = "[00:00] DOCTOR: Any allergies?\n[00:03] PATIENT: No, I am not allergic. Nina sukari.\n[00:09] DOCTOR: Take two tablets daily."
+    hyp = "[00:00] DOCTOR: Any allergies?\n[00:03] PATIENT: I am allergic. Nina sukari.\n[00:09] PATIENT: Take three tablets daily now."
+    m = asyncio.run(evaluate_texts(ref, hyp))
+    dels = [e for e in m["errors"] if e["type"] == "del" and e["ref"] in ("no", "not")]
+    assert len(dels) == 2 and all(e["clinical"] and e["clinical_class"] == "negation" for e in dels)
+    assert any(e["ref"] == "2" and e["hyp"] == "3" and e["clinical"] for e in m["errors"])
+    assert any(e["type"] == "ins" and e["hyp"] == "now" and not e["clinical"] for e in m["errors"])
+    assert m["role_accuracy"] == pytest.approx(2 / 3, abs=1e-5)
+
+
+def test_merged_and_dropped_turns_do_not_break_role_accuracy():
+    ref = "[00:00] DOCTOR: Habari karibu.\n[00:03] PATIENT: Nina homa.\n[00:06] COMPANION: Ana kikohozi pia.\n[00:09] DOCTOR: Sawa."
+    hyp = "[00:00] DOCTOR: Habari karibu.\n[00:03] PATIENT: Nina homa. Ana kikohozi pia.\n[00:09] DOCTOR: Sawa."
+    m = asyncio.run(evaluate_texts(ref, hyp))
+    assert m["counts"]["turns"]["turns_reference"] == 4 and 0 < m["role_accuracy"] < 1
+
+
+def test_identical_and_empty_edge_cases():
+    same = "[00:00] DOCTOR: No pain 20 mg."
+    m = asyncio.run(evaluate_texts(same, same))
+    assert m["wer_overall"] == 0 and m["cer_overall"] == 0 and m["clinical_token_error_rate"] == 0 and m["errors"] == []
+    m = asyncio.run(evaluate_texts("[00:00] DOCTOR: Hmm.", "[00:00] DOCTOR: Hmm."))
+    assert m["wer_overall"] == 0  # fillers normalise away: no reference tokens, no division by zero
