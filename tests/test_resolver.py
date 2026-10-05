@@ -60,3 +60,39 @@ def test_unmatched_left_uncoded_not_forced(register):
         assert e["code"] is None and e["status"] == "unresolved", value
     assert one("plan", el("Come back in 2 weeks"), register)["status"] == "unresolved"
 
+
+@pytest.mark.parametrize("value,code", [("Diclofenak", "M01AB05"), ("voltaren gel", "M01AB05"), ("amoxycillin", "J01CA04"), ("Omez", "A02BC01")])
+def test_near_misses_and_brands(register, value, code):
+    e = one("medication_history", el(value), register)
+    assert e["code"] == code and e["status"] == "resolved"
+
+
+def test_partial_match_is_ambiguous_with_null_code(register):
+    e = one("past_medical_history", el("ulcer"), register)
+    assert e["code"] is None and e["status"] == "ambiguous" and e["alternatives"]
+
+
+def test_rejected_and_companion_handling(register):
+    rej = one("assessment", el("Gastritis considered, not pursued", kind="considered_and_rejected"), register)
+    assert rej["code"] is None and "rejected" in rej["reason"]
+    comp = one("medication_history", el("Diclofenac", attribution="companion"), register)
+    assert comp["code"] == "M01AB05" and comp["requires_confirmation"] is True
+
+
+def test_shape_and_extraction_confidence_preserved(note1, register):
+    r = resolve_note(note1, register)
+    assert list(r) == list(note1)
+    e = r["plan"][0]
+    assert e["extraction_confidence"] == note1["plan"][0]["confidence"] and {"code", "code_system", "confidence", "alternatives", "status"} <= set(e)
+    assert r["past_medical_history"] == "NOT_STATED"
+
+
+def test_resolve_checked_rejects_bad_notes(register):
+    for bad in ([], {"nonsense": []}, {"plan": "oops"}, {"plan": [3]}):
+        with pytest.raises(NoteFormatError):
+            resolve_checked(bad, register)
+
+
+# register loading: every failure names the file and (where relevant) the line
+GOOD = "kind,code,name,synonyms\ndrug,A1,Alphadrug,alpha;alphax\n"
+
