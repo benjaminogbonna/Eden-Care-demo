@@ -96,3 +96,39 @@ def test_resolve_checked_rejects_bad_notes(register):
 # register loading: every failure names the file and (where relevant) the line
 GOOD = "kind,code,name,synonyms\ndrug,A1,Alphadrug,alpha;alphax\n"
 
+
+@pytest.mark.parametrize("text,fragment", [
+    ("", "empty"),
+    ("kind,code,name\ndrug,A1,Alpha\n", "missing required column"),
+    ("kind,code,name,synonyms\n", "no entries"),
+    (GOOD + "drug,A2,Beta\n", "line 3: expected 4 fields but found 3"),
+    (GOOD + 'drug,A2,"Beta,syn\n', "unparseable"),
+    (GOOD + "drug,A1,Alpha again,x\n", "duplicated"),
+    (GOOD + "lab,A1,Some lab,x\n", "two different kinds"),
+    (GOOD + "poison,A2,Beta,x\n", "unknown kind"),
+    (GOOD + "drug,,Beta,x\n", "non-empty"),
+])
+def test_register_errors_are_specific(text, fragment):
+    with pytest.raises(RegisterError) as e:
+        parse_register(text, "my.csv")
+    assert "my.csv" in e.value.message and fragment in e.value.message
+
+
+def test_missing_register_file(tmp_path):
+    with pytest.raises(RegisterError, match="not found"):
+        load_register(tmp_path / "nope.csv")
+
+
+def test_bundled_register_loads(register):
+    assert len(register.entries) == 12
+
+
+def test_resolver_package_has_no_network_or_model_calls():
+    """The resolver must be a pure function of (note, register)."""
+    banned = re.compile(r"\b(?:import|from)\s+(?:requests|httpx|urllib|urllib3|aiohttp|socket|http|openai|anthropic|google|genai|litellm|langchain)\b", re.I)
+    words = re.compile(r"openai|anthropic|gemini|genai|urlopen|socket|httpx|requests\.|aiohttp", re.I)
+    for path in (ROOT / "app" / "services" / "resolver").glob("*.py"):
+        src = path.read_text()
+        assert not banned.search(src), path
+        assert not words.search(src), path
+        assert "app.services.extraction" not in src and "app.core.config" not in src, f"{path} must not depend on the extraction layer or settings"
