@@ -1,3 +1,4 @@
+# Tests for the Gemini extraction path. 
 """Gemini path, exercised with an injected fake client (no network). The real SDK types are used for the config."""
 import asyncio
 import json
