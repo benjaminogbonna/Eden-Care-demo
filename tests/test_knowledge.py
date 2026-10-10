@@ -42,3 +42,9 @@ def test_tampered_quote_detected(guideline_text):
     k["rows"][0]["quote"] += " and always give antibiotics"
     assert verify_knowledge(k, guideline_text)
 
+
+def test_missing_header_or_rules_rejected():
+    with pytest.raises(InputError, match="header"):
+        build_knowledge("Just some text with no header.")
+    with pytest.raises(InputError, match="no recognisable"):
+        build_knowledge("SOURCE: Some Book, 1st edition, Section 1.1, page 2.\nNothing useful here.")
